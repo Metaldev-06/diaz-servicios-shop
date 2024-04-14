@@ -1,0 +1,17 @@
+meta {
+  name: Get Brand by ID
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}/brands/63ebc2d2-2247-49d0-b72a-0ebdb859dd3c
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "jbl"
+  }
+}

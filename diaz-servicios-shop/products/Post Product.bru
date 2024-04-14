@@ -1,0 +1,22 @@
+meta {
+  name: Post Product
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}/products
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "Galaxy s24 Ultra4",
+    "description": "Es el último modelo de samsung",
+    "price": 1000000,
+    "stock": 5,
+    "discount": 0,
+    "brand": "63ebc2d2-2247-49d0-b72a-0ebdb859dd3c"
+  }
+}

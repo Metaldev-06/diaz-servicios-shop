@@ -1,0 +1,22 @@
+meta {
+  name: Update Product
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{url}}/products/403b7865-61e0-46f2-8e79-886b7e209dd3
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "Galaxy s23 Ultra",
+    "description": "Es el ante último modelo de samsung",
+    "price": 700000,
+    "stock": 5,
+    "discount": 10,
+    "brand": "63ebc2d2-2247-49d0-b72a-0ebdb859dd3c"
+  }
+}

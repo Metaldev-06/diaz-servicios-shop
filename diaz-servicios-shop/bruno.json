@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "diaz-servicios-shop",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

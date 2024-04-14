@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      - DATABASE_HOST=127.0.0.1
+      - POSTGRES_DB=diaz-servicios-shop
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Metaldroide666
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - '80:80'
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=fernydiaz62@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=Metaldroide666
+    depends_on:
+      - postgres
