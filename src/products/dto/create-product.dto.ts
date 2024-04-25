@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class CreateProductDto {
   @Transform(({ value }) => value.trim().toLowerCase())
@@ -30,4 +30,9 @@ export class CreateProductDto {
 
   @IsString()
   brand: string;
+
+  @IsString({ each: true })
+  @IsArray()
+  @IsOptional()
+  images?: string[];
 }

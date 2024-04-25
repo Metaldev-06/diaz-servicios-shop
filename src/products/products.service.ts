@@ -4,16 +4,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Repository } from 'typeorm';
 
-import { HandleDBExceptions } from 'src/common/helpers/handleDBExeption.helper';
-import { CreateProductDto, UpdateProductDto } from './dto/index';
-import { PaginationDto } from 'src/common/dtos/pagination.dto';
-import { Product } from './entities/product.entity';
-import { Brand } from 'src/brands/entities/brand.entity';
-
 import { validate as isUUID } from 'uuid';
+
+import { Product, ProductImage } from './entities';
+import { Brand } from '@brands/entities/brand.entity';
+import { CreateProductDto, UpdateProductDto } from './dto/index';
+import { PaginationDto } from '@common/dtos/pagination.dto';
+import { HandleDBExceptions } from '@common/helpers/handleDBExeption.helper';
 
 @Injectable()
 export class ProductsService {
@@ -25,17 +24,24 @@ export class ProductsService {
 
     @InjectRepository(Brand)
     private readonly brandRepository: Repository<Brand>,
+
+    @InjectRepository(ProductImage)
+    private readonly productImageRepository: Repository<ProductImage>,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
     try {
+      const { images = [], ...productDetail } = createProductDto;
       const brand = await this.brandRepository.findOneBy({
         id: createProductDto.brand,
       });
 
       const newProduct = this.productRepository.create({
-        ...createProductDto,
+        ...productDetail,
         brand,
+        images: images.map((url) =>
+          this.productImageRepository.create({ url }),
+        ),
       });
 
       return await this.productRepository.save(newProduct);
@@ -50,6 +56,10 @@ export class ProductsService {
     return await this.productRepository.find({
       take: limit,
       skip: offset,
+      relations: {
+        images: true,
+        brand: true,
+      },
     });
   }
 
@@ -59,12 +69,14 @@ export class ProductsService {
     if (isUUID(term)) {
       product = await this.productRepository.findOneBy({ id: term });
     } else {
-      const queryBuilder = this.productRepository.createQueryBuilder();
+      const queryBuilder = this.productRepository.createQueryBuilder('prod');
       product = await queryBuilder
         .where('title =:title or slug =:slug', {
           title: term.toLowerCase().trim(),
           slug: term.toLowerCase().trim(),
         })
+        .leftJoinAndSelect('prod.images', 'prodImages')
+        .leftJoinAndSelect('prod.brand', 'brand')
         .getOne();
     }
 
@@ -83,6 +95,7 @@ export class ProductsService {
       id: id,
       ...updateProductDto,
       brand,
+      images: [],
     });
 
     if (!product)
@@ -97,13 +110,21 @@ export class ProductsService {
 
   async remove(id: string) {
     try {
+      await this.productRepository.softDelete({ id });
+
+      return {
+        message: 'product deleted',
+      };
+    } catch (error) {
+      HandleDBExceptions(error, this.nameService);
+    }
+  }
+
+  async delete(id: string) {
+    try {
       const product = await this.productRepository.findOneBy({ id });
 
-      if (!product) {
-        throw new BadRequestException('Product not found');
-      }
-
-      await this.productRepository.softRemove(product);
+      await this.productRepository.remove(product);
 
       return {
         message: 'product deleted',

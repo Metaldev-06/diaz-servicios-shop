@@ -10,12 +10,17 @@ import { UsersModule } from './users/users.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { BrandsModule } from './brands/brands.module';
 import { CommonModule } from './common/common.module';
+import { configLoader } from './config/config-loader';
+import { envSchema } from './config/env-schema';
+import { FilesModule } from '@files/files.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '.env',
+      // isGlobal: true,
+      // envFilePath: '.env',
+      load: [configLoader],
+      validationSchema: envSchema,
     }),
 
     TypeOrmModule.forRoot({
@@ -50,6 +55,8 @@ import { CommonModule } from './common/common.module';
     BrandsModule,
 
     CommonModule,
+
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

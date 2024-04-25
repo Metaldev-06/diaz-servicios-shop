@@ -8,9 +8,11 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ProductImage } from './index';
 
 @Entity('products')
 export class Product {
@@ -51,6 +53,12 @@ export class Product {
     eager: true,
   })
   brand: Brand;
+
+  @OneToMany(() => ProductImage, (productImage) => productImage.product, {
+    cascade: true,
+    eager: true,
+  })
+  images?: ProductImage[];
 
   @DeleteDateColumn()
   @Exclude()

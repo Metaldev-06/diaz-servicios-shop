@@ -16,6 +16,16 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@auth/*": ["src/auth/*"],
+      "@brands/*": ["src/brands/*"],
+      "@cloudinary/*": ["src/cloudinary/*"],
+      "@common/*": ["src/common/*"],
+      "@config/*": ["src/config/*"],
+      "@files/*": ["src/files/*"],
+      "@products/*": ["src/products/*"],
+      "@users/*": ["src/users/*"]
+    }
   }
 }
